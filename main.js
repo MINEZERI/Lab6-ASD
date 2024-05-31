@@ -87,6 +87,7 @@ document.getElementById("dfs").addEventListener("click", () => {
 	graphDraw.drawGraph(nodesNum);
 	
 	traversalTree = [];
+	const fullPath = [];
 	const treeMatrix = new Array(nodesNum);
 	for (let i = 0; i < nodesNum; i++) {
 		treeMatrix[i] = new Array(nodesNum).fill(0);
@@ -115,10 +116,14 @@ document.getElementById("dfs").addEventListener("click", () => {
 			traversalTree.push({begin: begin, target: target});
 			treeMatrix[begin][target] = 1;
 		}
+		
+		for (let el of path) {
+			if (!fullPath.includes(el)) fullPath.push(el);
+		}
 	}
 	
 	console.log("traversal tree", traversalTree);
-	console.log("dfs path", path);
+	console.log("dfs path", fullPath);
 	console.log("tree adjacency matrix", treeMatrix);
 	console.log("adjacency list", graph.makeAdjList());
 	indicator = 0;
@@ -132,6 +137,7 @@ document.getElementById("bfs").addEventListener("click", () => {
 	graphDraw.drawGraph(nodesNum);
 	
 	traversalTree = [];
+	const fullPath = [];
 	const treeMatrix = new Array(nodesNum);
 	const visited = new Array(nodesNum).fill(false);
 	
@@ -162,10 +168,14 @@ document.getElementById("bfs").addEventListener("click", () => {
 				}
 			}
 		}
+		
+		for (let el of path) {
+			if (!fullPath.includes(el)) fullPath.push(el);
+		}
 	}
 	
 	console.log("traversal tree", traversalTree);
-	console.log("bfs path", path);
+	console.log("bfs path", fullPath);
 	console.log("tree adjacency matrix", treeMatrix);
 	console.log("adjacency list", graph.makeAdjList());
 	indicator = 0;
