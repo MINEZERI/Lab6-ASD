@@ -87,7 +87,6 @@ document.getElementById("dfs").addEventListener("click", () => {
 	graphDraw.drawGraph(nodesNum);
 	
 	traversalTree = [];
-	const path = [];
 	const treeMatrix = new Array(nodesNum);
 	for (let i = 0; i < nodesNum; i++) {
 		treeMatrix[i] = new Array(nodesNum).fill(0);
@@ -97,6 +96,7 @@ document.getElementById("dfs").addEventListener("click", () => {
 	
 	for (let i = 0; i < sccs.length; i++) {
 		const component = sccs[i];
+		const path = [];
 		
 		for (let vertex of graph.dfs(component[0])) {
 			if (!path.includes(vertex)) path.push(vertex);
@@ -132,7 +132,6 @@ document.getElementById("bfs").addEventListener("click", () => {
 	graphDraw.drawGraph(nodesNum);
 	
 	traversalTree = [];
-	const path = [];
 	const treeMatrix = new Array(nodesNum);
 	const visited = new Array(nodesNum).fill(false);
 	
@@ -145,6 +144,8 @@ document.getElementById("bfs").addEventListener("click", () => {
 	
 	for (let i = 0; i < sccs.length; i++) {
 		const component = sccs[i];
+		const path = [];
+		
 		for (let vertex of graph.bfs(component[0])) {
 			if (!path.includes(vertex)) path.push(vertex);
 		}
@@ -181,7 +182,6 @@ document.getElementById("next step").addEventListener("click", () => {
 		graphDraw.drawGraph(nodesNum);
 		indicator = 0;
 	} else {
-		console.log(indicator);
 		graphDraw.drawStep(traversalTree[indicator].begin, traversalTree[indicator].target);
 		indicator++;
 	}
