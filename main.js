@@ -180,10 +180,11 @@ document.getElementById("next step").addEventListener("click", () => {
 		context.strokeStyle = 'black';
 		graphDraw.drawGraph(nodesNum);
 		indicator = 0;
+	} else {
+		console.log(indicator);
+		graphDraw.drawStep(traversalTree[indicator].begin, traversalTree[indicator].target);
+		indicator++;
 	}
-	console.log(indicator);
-	graphDraw.drawStep(traversalTree[indicator].begin, traversalTree[indicator].target);
-	indicator++;
 });
 
 
