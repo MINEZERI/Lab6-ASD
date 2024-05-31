@@ -9,7 +9,7 @@ export default class GraphDrawing {
 		this.nodesList = [];
 	}
 	
-	drawNode = (x, y, text) => {
+	drawNode = (x, y, text = '') => {
 		this.ctx.textAlign = 'center';
 		this.ctx.textBaseline = 'middle';
 		this.ctx.font = '20px Arial';
@@ -19,7 +19,7 @@ export default class GraphDrawing {
 		this.ctx.fillText(text, x, y);
 		this.ctx.stroke();
 		this.ctx.closePath();
-		this.nodesList.push({x, y});
+		this.nodesList.push({x: x, y: y});
 	}
 	
 	drawFigure = (nodesNum) => {
@@ -170,5 +170,15 @@ export default class GraphDrawing {
 				}
 			}
 		}
+	}
+	
+	drawStep = (node1, node2) => {
+		const x1 = this.nodesList[node1].x;
+		const y1 = this.nodesList[node1].y;
+		const x2 = this.nodesList[node2].x;
+		const y2 = this.nodesList[node2].y;
+		this.drawNode(x1, y1);
+		this.drawNode(x2, y2);
+		this.drawLine(this.nodesList[node1], this.nodesList[node2], node1, node2);
 	}
 }

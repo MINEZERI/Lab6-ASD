@@ -197,14 +197,16 @@ export default class GraphManipulation {
 		return reachabilityMatrix;
 	}
 	
-	makeAdjList = (adjMatrix) => {
+	makeAdjList = () => {
+		const matrix = this.adjacencyMatrix;
+		const length = matrix.length;
 		const adjList = [];
-		for (let i = 0; i < adjMatrix.length; i++) {
+		for (let i = 0; i < length; i++) {
 			adjList[i] = [];
 		}
-		for (let i = 0; i < adjMatrix.length; i++) {
-			for (let j = 0; j < adjMatrix.length; j++) {
-				if (adjMatrix[i][j] === 1) {
+		for (let i = 0; i < length; i++) {
+			for (let j = 0; j < length; j++) {
+				if (matrix[i][j] === 1) {
 					adjList[i].push(j);
 				}
 			}
@@ -213,7 +215,7 @@ export default class GraphManipulation {
 	}
 	
 	isReachable = (begin, target) => {
-		const adjacencyList = this.makeAdjList(this.adjacencyMatrix);
+		const adjacencyList = this.makeAdjList();
 		const visited = Array(adjacencyList.length).fill(0);
 		const stack = [];
 		stack.push(begin);
@@ -236,10 +238,10 @@ export default class GraphManipulation {
 		return false;
 	}
 	
-	findSCCs = () => {
+	getSCCs = () => {
 		const length = this.adjacencyMatrix.length;
 		const result = [];
-		const visited = new Array(length).fill(0);
+		const visited = new Array(length).fill(false);
 		
 		for (let i = 0; i < length; i++) {
 			if (!visited[i]) {
@@ -247,7 +249,7 @@ export default class GraphManipulation {
 				const scc = [];
 				for (let j = 0; j < length; j++) {
 					if (!visited[j] && this.isReachable(i, j) && this.isReachable(j, i)) {
-						visited[j] = 1;
+						visited[j] = true;
 						scc.push(j);
 					}
 				}
@@ -259,7 +261,7 @@ export default class GraphManipulation {
 	}
 	
 	getCondensationMatrix = () => {
-		const sccs = this.findSCCs();
+		const sccs = this.getSCCs();
 		const length = sccs.length;
 		const condensationMatrix = new Array(length);
 		for (let i = 0; i < length; i++) {
@@ -278,4 +280,49 @@ export default class GraphManipulation {
 		return condensationMatrix;
 	}
 	
+	dfs = (vertex) => {
+		const adjacencyList = this.makeAdjList();
+		const visited = new Array(adjacencyList.length).fill(false);
+		const stack = [vertex];
+		const result = [];
+		
+		while (stack.length) {
+			const currentVertex = stack.pop();
+			if (!visited[currentVertex]) {
+				visited[currentVertex] = true;
+				result.push(currentVertex);
+				
+				for (let neighbor of adjacencyList[currentVertex]) {
+					if (!visited[neighbor]) {
+						stack.push(neighbor);
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	bfs = (vertex) => {
+		const adjacencyList = this.makeAdjList();
+		const visited = new Array(adjacencyList.length).fill(false);
+		const queue = [vertex];
+		const result = [];
+		
+		while (queue.length) {
+			const currentVertex = queue.shift();
+			if (!visited[currentVertex]) {
+				visited[currentVertex] = true;
+				result.push(currentVertex);
+				
+				for (let neighbor of adjacencyList[currentVertex]) {
+					if (!visited[neighbor]) {
+						queue.push(neighbor);
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
 }
