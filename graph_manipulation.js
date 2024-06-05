@@ -122,7 +122,7 @@ export default class GraphManipulation {
 		return poweredMatrix;
 	}
 	
-	getTransposedMatrix = (matrix) => {
+	getTransposedMatrix = matrix => {
 		const rows = matrix.length;
 		const cols = matrix[0].length;
 		const transposedMatrix = new Array(cols);
@@ -136,7 +136,7 @@ export default class GraphManipulation {
 		
 		return transposedMatrix;
 	}
-	getNextPaths = (paths) => {     // if needed A^length can check if there are paths from i to j
+	getNextPaths = paths => {     // if needed A^length can check if there are paths from i to j
 		const newPaths = [];
 		
 		for (let path of paths) {
@@ -149,7 +149,7 @@ export default class GraphManipulation {
 		return newPaths;
 	}
 	
-	getAllPaths = (pathLength) => {
+	getAllPaths = pathLength => {
 		const allPaths = [];
 		
 		for (let i = 0; i < this.adjacencyMatrix.length; i++) {
@@ -163,7 +163,7 @@ export default class GraphManipulation {
 		return allPaths;
 	}
 	
-	getReachabilityMatrix = (maxLength) => {
+	getReachabilityMatrix = maxLength => {
 		length = this.adjacencyMatrix.length;
 		
 		const reachabilityMatrix = new Array(length);
@@ -184,7 +184,7 @@ export default class GraphManipulation {
 		return reachabilityMatrix;
 	}
 	
-	getMatrixOfStrongConnection = (maxLength) => {
+	getMatrixOfStrongConnection = maxLength => {
 		const reachabilityMatrix = this.getReachabilityMatrix(maxLength);
 		const transposedReachabilityMatrix = this.getTransposedMatrix(reachabilityMatrix);
 		
@@ -280,7 +280,7 @@ export default class GraphManipulation {
 		return condensationMatrix;
 	}
 	
-	dfs = (vertex) => {
+	dfs = vertex => {
 		const adjacencyList = this.makeAdjList();
 		const visited = new Array(adjacencyList.length).fill(false);
 		const stack = [vertex];
@@ -303,7 +303,7 @@ export default class GraphManipulation {
 		return result;
 	}
 	
-	bfs = (vertex) => {
+	bfs = vertex => {
 		const adjacencyList = this.makeAdjList();
 		const visited = new Array(adjacencyList.length).fill(false);
 		const queue = [vertex];
@@ -324,5 +324,37 @@ export default class GraphManipulation {
 		}
 		
 		return result;
+	}
+	
+	getWeightMatrix = generator => {
+		const B = [];
+		const C = [];
+		const D = [];
+		const H = [];
+		const Tr = [];
+		const weightMatrix = [];
+		for (let i = 0; i < this.nodesNum; i++) {
+			B[i] = new Array(this.nodesNum).fill(0);
+			C[i] = new Array(this.nodesNum).fill(0);
+			D[i] = new Array(this.nodesNum).fill(0);
+			H[i] = new Array(this.nodesNum).fill(0);
+			Tr[i] = new Array(this.nodesNum).fill(0);
+			weightMatrix[i] = new Array(this.nodesNum).fill(0);
+			for (let j = 0; j < this.nodesNum; j++) {
+				B[i][j] = 2 * generator();
+				C[i][j] = Math.ceil(B[i][j] * 100 * this.adjacencyMatrix[i][j]);
+				D[i][j] = C[i][j] === 0 ? 0 : 1;
+				if (i < j) Tr[i][j] = 1;
+			}
+		}
+		
+		for (let i = 0; i < this.nodesNum; i++) {
+			for (let j = 0; j < this.nodesNum; j++) {
+				H[i][j] = D[i][j] !== D[j][i] ? 1 : 0;
+				weightMatrix[j][i] = weightMatrix[i][j] = (D[i][j] + H[i][j] * Tr[i][j]) * C[i][j];
+			}
+		}
+		
+		return weightMatrix;
 	}
 }

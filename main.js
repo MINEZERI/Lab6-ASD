@@ -11,14 +11,13 @@ const n1 = 3;
 const n2 = 2;
 const n3 = 1;
 const n4 = 9;
-const k = 1 - n3 * 0.01 - n4 * 0.005 - 0.15;
+const k = 1 - n3 * 0.01 - n4 * 0.005 - 0.05;
 const nodesNum = 10 + n3;
 const nodeRadius = 30;
 
 const graph = new GraphManipulation(nodesNum);
 const graphDraw = new GraphDrawing(canvas, graph, nodeRadius);
 
-let path = [];
 let traversalTree = [];
 let indicator = 0;
 document.getElementById("switch").addEventListener("click", () => {
@@ -192,10 +191,64 @@ document.getElementById("next step").addEventListener("click", () => {
 		graphDraw.drawGraph(nodesNum);
 		indicator = 0;
 	} else {
+		const direction = graph.isDirected;
+		graph.isDirected = true;
 		graphDraw.drawStep(traversalTree[indicator].begin, traversalTree[indicator].target);
 		indicator++;
+		graph.isDirected = direction;
 	}
 });
+
+document.getElementById("Prim span tree").addEventListener("click", () => {
+	console.clear();
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	graph.isDirected = false;
+	graph.undirectMatrix();
+	context.strokeStyle = 'black';
+	context.lineWidth = 1;
+	traversalTree = [];
+	
+	const generator = new Math.seedrandom([n1, n2, n3, n4].join);
+	const weightMatrix = graph.getWeightMatrix(generator);
+	graphDraw.drawGraph(nodesNum);
+	const visited = new Array(nodesNum).fill(false);
+	
+	visited[0] = true;
+	const adjacencyList = graph.makeAdjList();
+	let visitedCount = 1;
+	let weightSum = 0;
+	while (visitedCount !== nodesNum) {
+		
+		let min = Infinity;
+		let begin = -1;
+		let target = -1;
+		for (let i = 0; i < nodesNum; i++) {
+			if (visited[i]) {
+				for (let neighbor of adjacencyList[i]) {
+					if (weightMatrix[i][neighbor] < min && !visited[neighbor]) {
+						min = weightMatrix[i][neighbor];
+						begin = i;
+						target = neighbor;
+					}
+				}
+			}
+		}
+		if (begin !== -1 && target !== -1) {
+			
+			visited[target] = true;
+			weightSum += weightMatrix[begin][target];
+			traversalTree.push({begin: begin, target: target});
+			visitedCount++;
+		}
+	}
+	
+	console.table(weightMatrix);
+	console.log(traversalTree);
+	console.log(weightSum);
+	indicator = 0;
+});
+
+
 
 
 
